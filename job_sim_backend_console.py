@@ -50,6 +50,7 @@ if __name__ == "__main__":
     industry_interest = input("3. Industries you're interested in (e.g., Tech, Healthcare): ")
     workstyle = input("4. Your preferred workstyle (Creative, Analytical, Collaborative): ")
     skills = input("5. Your key skills (comma-separated): ")
+    personality_type = input("6. Your personality type (e.g., ENFP, INTJ): ")
 
     user_background = f"""
     Name: {name}
