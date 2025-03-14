@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your AI Career Path - Results</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .results-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .career-path {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .career-path::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1));
+            z-index: 0;
+        }
+
+        .career-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .impact-graph {
+            width: 100%;
+            height: 200px;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .graph-bar {
+            position: absolute;
+            bottom: 0;
+            width: 30%;
+            background: linear-gradient(180deg, var(--neon-purple), var(--neon-blue));
+            border-radius: 5px 5px 0 0;
+            transition: height 1s ease;
+        }
+
+        .recommendations {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .recommendation-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .skill-tag {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            margin: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .action-steps {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: var(--glass-bg);
+            border-radius: 15px;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .step-item:hover {
+            transform: translateX(10px);
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+        }
+
+        .floating-robot {
+            position: absolute;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 200px;
+            height: 200px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(-50%) translateX(0); }
+            50% { transform: translateY(-50%) translateX(-20px); }
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            z-index: 1000;
+        }
+
+        .share-section {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .share-button {
+            padding: 1rem 2rem;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            border: none;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .share-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--neon-blue);
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    <div class="progress-bar"></div>
+
+    <header>
+        <nav>
+            <div class="logo">AI Career Explorer</div>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#help">Help</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="results-container">
+        <h1>Your AI-Enhanced Career Path</h1>
+        <p>Based on your profile and industry trends, here are your personalized recommendations</p>
+
+        <div class="career-path">
+            <div class="career-content">
+                <h2>Career Impact Analysis</h2>
+                <div class="impact-graph">
+                    <div class="graph-bar" style="left: 10%; height: 60%;" data-label="Current Role"></div>
+                    <div class="graph-bar" style="left: 40%; height: 85%;" data-label="5 Years"></div>
+                    <div class="graph-bar" style="left: 70%; height: 95%;" data-label="10 Years"></div>
+                </div>
+            </div>
+            <canvas id="robot-canvas" class="floating-robot"></canvas>
+        </div>
+
+        <div class="recommendations">
+            <div class="recommendation-card">
+                <h3>Primary Career Path</h3>
+                <p id="primary-recommendation">Loading...</p>
+                <div class="required-skills">
+                    <h4>Key Skills Needed:</h4>
+                    <div id="primary-skills"></div>
+                </div>
+            </div>
+
+            <div class="recommendation-card">
+                <h3>Alternative Path 1</h3>
+                <p id="alt1-recommendation">Loading...</p>
+                <div class="required-skills">
+                    <h4>Key Skills Needed:</h4>
+                    <div id="alt1-skills"></div>
+                </div>
+            </div>
+
+            <div class="recommendation-card">
+                <h3>Alternative Path 2</h3>
+                <p id="alt2-recommendation">Loading...</p>
+                <div class="required-skills">
+                    <h4>Key Skills Needed:</h4>
+                    <div id="alt2-skills"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-steps">
+            <h2>Your Path Forward</h2>
+            <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>Skill Development</h4>
+                    <p>Focus on acquiring the key skills identified for your chosen path</p>
+                </div>
+            </div>
+            <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>Industry Networking</h4>
+                    <p>Connect with professionals in your target field</p>
+                </div>
+            </div>
+            <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>Practical Experience</h4>
+                    <p>Start working on projects that build your portfolio</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="share-section">
+            <button class="share-button" onclick="shareResults()">Share Your Results</button>
+        </div>
+    </main>
+
+    <script>
+        // Load and process user selections
+        window.onload = function() {
+            const careerGoal = localStorage.getItem('careerGoal');
+            const selectedSector = localStorage.getItem('selectedSector');
+            const quizAnswers = JSON.parse(localStorage.getItem('quizAnswers'));
+
+            // Career recommendations based on user selections
+            const recommendations = {
+                tech: {
+                    primary: {
+                        title: "AI/ML Engineer",
+                        description: "Develop and implement AI solutions for complex problems",
+                        skills: ["Python", "Machine Learning", "Deep Learning", "Data Structures"]
+                    },
+                    alt1: {
+                        title: "Data Scientist",
+                        description: "Analyze complex data sets to drive business decisions",
+                        skills: ["Statistics", "Data Analysis", "Python", "SQL"]
+                    },
+                    alt2: {
+                        title: "AI Product Manager",
+                        description: "Guide AI product development and strategy",
+                        skills: ["Product Management", "AI Understanding", "Business Strategy"]
+                    }
+                },
+                health: {
+                    primary: {
+                        title: "Healthcare AI Specialist",
+                        description: "Apply AI to improve medical diagnosis and treatment",
+                        skills: ["Medical Knowledge", "AI Applications", "Data Analysis"]
+                    },
+                    alt1: {
+                        title: "Digital Health Consultant",
+                        description: "Guide healthcare organizations in digital transformation",
+                        skills: ["Healthcare Systems", "Digital Strategy", "Change Management"]
+                    },
+                    alt2: {
+                        title: "Medical Data Analyst",
+                        description: "Analyze healthcare data for improved patient outcomes",
+                        skills: ["Healthcare Analytics", "Statistics", "Data Visualization"]
+                    }
+                }
+                // Add more sectors as needed
+            };
+
+            // Update recommendations based on sector
+            const sectorRecs = recommendations[selectedSector] || recommendations.tech;
+            
+            document.getElementById('primary-recommendation').textContent = 
+                `${sectorRecs.primary.title}: ${sectorRecs.primary.description}`;
+            document.getElementById('primary-skills').innerHTML = 
+                sectorRecs.primary.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('');
+            
+            document.getElementById('alt1-recommendation').textContent = 
+                `${sectorRecs.alt1.title}: ${sectorRecs.alt1.description}`;
+            document.getElementById('alt1-skills').innerHTML = 
+                sectorRecs.alt1.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('');
+            
+            document.getElementById('alt2-recommendation').textContent = 
+                `${sectorRecs.alt2.title}: ${sectorRecs.alt2.description}`;
+            document.getElementById('alt2-skills').innerHTML = 
+                sectorRecs.alt2.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('');
+        };
+
+        // Share functionality
+        function shareResults() {
+            // Implement sharing functionality (e.g., generate PDF, share link, etc.)
+            alert('Share functionality coming soon!');
+        }
+
+        // Initialize 3D robot animation
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, 200 / 200, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({
+            canvas: document.getElementById('robot-canvas'),
+            alpha: true
+        });
+
+        renderer.setSize(200, 200);
+        camera.position.z = 5;
+
+        // Create Robot
+        function createRobot() {
+            const robotGroup = new THREE.Group();
+
+            const bodyGeometry = new THREE.BoxGeometry(1, 1.5, 1);
+            const bodyMaterial = new THREE.MeshPhongMaterial({ color: 0x00f3ff });
+            const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+            robotGroup.add(body);
+
+            const headGeometry = new THREE.SphereGeometry(0.4, 32, 32);
+            const headMaterial = new THREE.MeshPhongMaterial({ color: 0x9d00ff });
+            const head = new THREE.Mesh(headGeometry, headMaterial);
+            head.position.y = 1.2;
+            robotGroup.add(head);
+
+            return robotGroup;
+        }
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(5, 5, 5);
+        scene.add(directionalLight);
+
+        const robot = createRobot();
+        scene.add(robot);
+
+        function animate() {
+            requestAnimationFrame(animate);
+            robot.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    </script>
+</body>
+</html> 

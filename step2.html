@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 2: Industry Analysis - AI Career Explorer</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .analysis-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(0, 20, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid var(--matrix-green);
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .chart-container {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid var(--matrix-green);
+            border-radius: 10px;
+            padding: 1rem;
+            height: 300px;
+        }
+
+        .industry-input {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .industry-input input {
+            flex: 1;
+            padding: 0.5rem;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid var(--matrix-green);
+            color: var(--matrix-green);
+            border-radius: 5px;
+        }
+
+        .industry-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .industry-tag {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid var(--matrix-green);
+            color: var(--matrix-green);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .path-forward {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid var(--matrix-green);
+            border-radius: 10px;
+        }
+
+        .job-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .job-link {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid var(--matrix-green);
+            padding: 1rem;
+            border-radius: 5px;
+            color: var(--matrix-green);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .job-link:hover {
+            background: var(--matrix-green);
+            color: var(--dark-bg);
+            transform: translateY(-5px);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid var(--matrix-green);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            color: var(--matrix-green);
+            margin: 0.5rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    <canvas id="game-canvas"></canvas>
+
+    <div class="game-overlay">
+        <header>
+            <nav>
+                <div class="logo">AI Career Explorer</div>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="step1.html">Previous Step</a></li>
+                    <li><a href="step3.html">Next Step</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <section class="analysis-container">
+                <h2>Industry Analysis</h2>
+
+                <div class="industry-input">
+                    <input type="text" id="industryInput" placeholder="Enter an industry">
+                    <button class="cta-button" onclick="addIndustry()">Add Industry</button>
+                </div>
+                <div class="industry-tags" id="industryTags"></div>
+
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <h3>AI Impact Score</h3>
+                        <div class="stat-value" id="aiImpactScore">0%</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Growth Potential</h3>
+                        <div class="stat-value" id="growthPotential">0%</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Skill Match</h3>
+                        <div class="stat-value" id="skillMatch">0%</div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="path-forward">
+                    <h3>Path Forward</h3>
+                    <div class="job-links">
+                        <a href="#" class="job-link" target="_blank">
+                            <h4>Job Market Analysis</h4>
+                            <p>Explore current opportunities in your selected industries</p>
+                        </a>
+                        <a href="#" class="job-link" target="_blank">
+                            <h4>Skill Development</h4>
+                            <p>Recommended courses and certifications</p>
+                        </a>
+                        <a href="#" class="job-link" target="_blank">
+                            <h4>Career Guidance</h4>
+                            <p>Connect with industry experts and mentors</p>
+                        </a>
+                        <a href="#" class="job-link" target="_blank">
+                            <h4>Job Opportunities</h4>
+                            <p>Browse relevant job listings</p>
+                        </a>
+                    </div>
+                </div>
+
+                <button class="cta-button" onclick="proceedToNextStep()">Continue to Career Recommendations</button>
+            </section>
+        </main>
+    </div>
+
+    <script src="scripts.js"></script>
+    <script>
+        let industries = [];
+        let assessmentData = JSON.parse(localStorage.getItem('assessmentData'));
+
+        // Initialize charts
+        const trendCtx = document.getElementById('trendChart').getContext('2d');
+        const distributionCtx = document.getElementById('distributionChart').getContext('2d');
+
+        const trendChart = new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+                datasets: [{
+                    label: 'Industry Growth Trend',
+                    data: [0, 0, 0, 0, 0, 0],
+                    borderColor: '#00ff00',
+                    backgroundColor: 'rgba(0, 255, 0, 0.1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#00ff00'
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 255, 0, 0.1)'
+                        },
+                        ticks: {
+                            color: '#00ff00'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(0, 255, 0, 0.1)'
+                        },
+                        ticks: {
+                            color: '#00ff00'
+                        }
+                    }
+                }
+            }
+        });
+
+        const distributionChart = new Chart(distributionCtx, {
+            type: 'pie',
+            data: {
+                labels: ['AI Integration', 'Traditional', 'Hybrid'],
+                datasets: [{
+                    data: [0, 0, 0],
+                    backgroundColor: [
+                        'rgba(0, 255, 0, 0.8)',
+                        'rgba(0, 255, 0, 0.4)',
+                        'rgba(0, 255, 0, 0.6)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#00ff00'
+                        }
+                    }
+                }
+            }
+        });
+
+        function addIndustry() {
+            const input = document.getElementById('industryInput');
+            const industry = input.value.trim();
+            
+            if (industry && !industries.includes(industry)) {
+                industries.push(industry);
+                updateIndustryTags();
+                input.value = '';
+                updateCharts();
+            }
+        }
+
+        function removeIndustry(industry) {
+            industries = industries.filter(i => i !== industry);
+            updateIndustryTags();
+            updateCharts();
+        }
+
+        function updateIndustryTags() {
+            const container = document.getElementById('industryTags');
+            container.innerHTML = industries.map(industry => `
+                <div class="industry-tag">
+                    ${industry}
+                    <button onclick="removeIndustry('${industry}')">×</button>
+                </div>
+            `).join('');
+        }
+
+        function updateCharts() {
+            if (industries.length === 0) return;
+
+            // Update trend chart with random data (replace with real data in production)
+            const trendData = industries.map(() => 
+                Array.from({length: 6}, () => Math.floor(Math.random() * 100))
+            );
+            
+            trendChart.data.datasets = industries.map((industry, index) => ({
+                label: industry,
+                data: trendData[index],
+                borderColor: `hsl(${index * 120}, 100%, 50%)`,
+                backgroundColor: `hsla(${index * 120}, 100%, 50%, 0.1)`,
+                tension: 0.4
+            }));
+
+            // Update distribution chart
+            distributionChart.data.datasets[0].data = [
+                Math.floor(Math.random() * 100),
+                Math.floor(Math.random() * 100),
+                Math.floor(Math.random() * 100)
+            ];
+
+            // Update stats
+            document.getElementById('aiImpactScore').textContent = 
+                `${Math.floor(Math.random() * 100)}%`;
+            document.getElementById('growthPotential').textContent = 
+                `${Math.floor(Math.random() * 100)}%`;
+            document.getElementById('skillMatch').textContent = 
+                `${Math.floor(Math.random() * 100)}%`;
+
+            trendChart.update();
+            distributionChart.update();
+        }
+
+        function proceedToNextStep() {
+            if (industries.length === 0) {
+                alert('Please add at least one industry to analyze');
+                return;
+            }
+
+            // Save the data
+            const analysisData = {
+                industries,
+                stats: {
+                    aiImpact: document.getElementById('aiImpactScore').textContent,
+                    growth: document.getElementById('growthPotential').textContent,
+                    skillMatch: document.getElementById('skillMatch').textContent
+                }
+            };
+
+            localStorage.setItem('analysisData', JSON.stringify(analysisData));
+            window.location.href = 'step3.html';
+        }
+
+        // Initialize with any existing data
+        if (assessmentData) {
+            // You could pre-populate industries based on the assessment data
+            updateCharts();
+        }
+    </script>
+</body>
+</html> 

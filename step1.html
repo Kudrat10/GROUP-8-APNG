@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 1: Skills & Personality Assessment - AI Career Explorer</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .assessment-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(0, 20, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid var(--matrix-green);
+        }
+
+        .skill-input {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .skill-input input {
+            flex: 1;
+            padding: 0.5rem;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid var(--matrix-green);
+            color: var(--matrix-green);
+            border-radius: 5px;
+        }
+
+        .skill-input button {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid var(--matrix-green);
+            color: var(--matrix-green);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .skill-input button:hover {
+            background: var(--matrix-green);
+            color: var(--dark-bg);
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .skill-tag {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid var(--matrix-green);
+            color: var(--matrix-green);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .skill-tag button {
+            background: none;
+            border: none;
+            color: var(--matrix-green);
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .ai-preference {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .ai-option {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid var(--matrix-green);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ai-option:hover {
+            background: rgba(0, 255, 0, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .ai-option.selected {
+            background: var(--matrix-green);
+            color: var(--dark-bg);
+        }
+
+        .personality-section {
+            margin-top: 2rem;
+        }
+
+        .personality-input {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .personality-input input {
+            padding: 0.5rem;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid var(--matrix-green);
+            color: var(--matrix-green);
+            border-radius: 5px;
+        }
+
+        .country-select {
+            width: 100%;
+            padding: 0.5rem;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid var(--matrix-green);
+            color: var(--matrix-green);
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 5px;
+            background: rgba(0, 255, 0, 0.1);
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--matrix-green);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    <canvas id="game-canvas"></canvas>
+
+    <div class="game-overlay">
+        <header>
+            <nav>
+                <div class="logo">AI Career Explorer</div>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#assessment">Assessment</a></li>
+                    <li><a href="step2.html">Next Step</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <section id="assessment" class="assessment-container">
+                <h2>Skills & Personality Assessment</h2>
+                
+                <div class="progress-bar">
+                    <div class="progress" style="width: 0%"></div>
+                </div>
+
+                <div class="country-select">
+                    <label for="country">Select Your Country:</label>
+                    <select id="country" onchange="updateStatistics()">
+                        <option value="">Select a country</option>
+                        <option value="US">United States</option>
+                        <option value="UK">United Kingdom</option>
+                        <option value="CA">Canada</option>
+                        <option value="AU">Australia</option>
+                        <option value="DE">Germany</option>
+                        <option value="FR">France</option>
+                        <option value="JP">Japan</option>
+                        <option value="SG">Singapore</option>
+                        <option value="IN">India</option>
+                        <option value="CN">China</option>
+                    </select>
+                </div>
+
+                <div class="skill-section">
+                    <h3>Your Skills</h3>
+                    <div class="skill-input">
+                        <input type="text" id="skillInput" placeholder="Enter a skill">
+                        <button onclick="addSkill()">Add Skill</button>
+                    </div>
+                    <div class="skill-tags" id="skillTags"></div>
+                </div>
+
+                <div class="ai-preference">
+                    <h3>AI Interaction Preference</h3>
+                    <div class="ai-option" onclick="selectAIOption(this, 'use')">
+                        <h4>Use AI</h4>
+                        <p>Directly use AI tools</p>
+                    </div>
+                    <div class="ai-option" onclick="selectAIOption(this, 'collaborate')">
+                        <h4>Collaborate</h4>
+                        <p>Work alongside AI</p>
+                    </div>
+                    <div class="ai-option" onclick="selectAIOption(this, 'develop')">
+                        <h4>Develop</h4>
+                        <p>Create AI solutions</p>
+                    </div>
+                </div>
+
+                <div class="personality-section">
+                    <h3>Personality Assessment</h3>
+                    <div class="personality-input">
+                        <div>
+                            <label for="personalityType">Personality Type (e.g., INTJ, ENFP):</label>
+                            <input type="text" id="personalityType" placeholder="Enter your personality type">
+                        </div>
+                        <div>
+                            <label for="workStyle">Preferred Work Style:</label>
+                            <input type="text" id="workStyle" placeholder="e.g., Remote, Hybrid, Office">
+                        </div>
+                        <div>
+                            <label for="learningStyle">Learning Style:</label>
+                            <input type="text" id="learningStyle" placeholder="e.g., Visual, Auditory, Kinesthetic">
+                        </div>
+                        <div>
+                            <label for="stressManagement">Stress Management:</label>
+                            <input type="text" id="stressManagement" placeholder="e.g., Exercise, Meditation">
+                        </div>
+                    </div>
+                </div>
+
+                <button class="cta-button" onclick="proceedToNextStep()">Continue to Industry Analysis</button>
+            </section>
+        </main>
+    </div>
+
+    <script src="scripts.js"></script>
+    <script>
+        let skills = [];
+        let selectedAIOption = null;
+
+        function addSkill() {
+            const input = document.getElementById('skillInput');
+            const skill = input.value.trim();
+            
+            if (skill && !skills.includes(skill)) {
+                skills.push(skill);
+                updateSkillTags();
+                input.value = '';
+                updateProgress();
+            }
+        }
+
+        function removeSkill(skill) {
+            skills = skills.filter(s => s !== skill);
+            updateSkillTags();
+            updateProgress();
+        }
+
+        function updateSkillTags() {
+            const container = document.getElementById('skillTags');
+            container.innerHTML = skills.map(skill => `
+                <div class="skill-tag">
+                    ${skill}
+                    <button onclick="removeSkill('${skill}')">×</button>
+                </div>
+            `).join('');
+        }
+
+        function selectAIOption(element, option) {
+            document.querySelectorAll('.ai-option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedAIOption = option;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progress = document.querySelector('.progress');
+            let percentage = 0;
+            
+            if (skills.length > 0) percentage += 25;
+            if (selectedAIOption) percentage += 25;
+            if (document.getElementById('personalityType').value) percentage += 25;
+            if (document.getElementById('country').value) percentage += 25;
+            
+            progress.style.width = `${percentage}%`;
+        }
+
+        function updateStatistics() {
+            const country = document.getElementById('country').value;
+            if (country) {
+                // Here you would typically fetch country-specific statistics
+                // For now, we'll just update the progress
+                updateProgress();
+            }
+        }
+
+        function proceedToNextStep() {
+            if (skills.length === 0) {
+                alert('Please add at least one skill');
+                return;
+            }
+            if (!selectedAIOption) {
+                alert('Please select your AI interaction preference');
+                return;
+            }
+            if (!document.getElementById('personalityType').value) {
+                alert('Please enter your personality type');
+                return;
+            }
+            if (!document.getElementById('country').value) {
+                alert('Please select your country');
+                return;
+            }
+
+            // Save the data to localStorage
+            const assessmentData = {
+                skills,
+                aiPreference: selectedAIOption,
+                personality: {
+                    type: document.getElementById('personalityType').value,
+                    workStyle: document.getElementById('workStyle').value,
+                    learningStyle: document.getElementById('learningStyle').value,
+                    stressManagement: document.getElementById('stressManagement').value
+                },
+                country: document.getElementById('country').value
+            };
+
+            localStorage.setItem('assessmentData', JSON.stringify(assessmentData));
+            window.location.href = 'step2.html';
+        }
+
+        // Add event listeners for input fields
+        document.querySelectorAll('.personality-input input').forEach(input => {
+            input.addEventListener('input', updateProgress);
+        });
+    </script>
+</body>
+</html> 

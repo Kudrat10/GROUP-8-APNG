@@ -1,0 +1,306 @@
+/* Matrix Theme and Animations */
+:root {
+    --matrix-green: #00ff00;
+    --matrix-dark: #001100;
+    --silver-foil: linear-gradient(45deg, #c0c0c0, #ffffff, #c0c0c0);
+    --neon-blue: #00f3ff;
+    --neon-purple: #9d00ff;
+    --dark-bg: #000a0a;
+    --glass-bg: rgba(0, 255, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Courier New', monospace;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--matrix-green);
+    overflow-x: hidden;
+}
+
+/* Matrix Rain Effect */
+.matrix-rain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -3;
+    opacity: 0.1;
+    pointer-events: none;
+}
+
+/* Silver Foil Effect */
+.silver-foil {
+    background: var(--silver-foil);
+    background-size: 200% 200%;
+    animation: foil-shine 3s linear infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes foil-shine {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}
+
+/* Matrix Digital Rain Animation */
+@keyframes matrix-rain {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+}
+
+/* Navigation */
+nav {
+    background: rgba(0, 20, 0, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 1rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--matrix-green);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--matrix-green);
+    text-shadow: 0 0 10px var(--matrix-green);
+    position: relative;
+}
+
+.logo::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: var(--matrix-green);
+    z-index: -1;
+    filter: blur(5px);
+    opacity: 0.5;
+}
+
+nav ul {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+nav a {
+    color: var(--matrix-green);
+    text-decoration: none;
+    position: relative;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 5px var(--matrix-green);
+}
+
+nav a:hover {
+    color: #ffffff;
+    text-shadow: 0 0 10px var(--matrix-green);
+}
+
+/* Hero Section */
+#hero {
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5%;
+    position: relative;
+}
+
+.hero-content {
+    max-width: 600px;
+    position: relative;
+}
+
+.hero-content h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    color: var(--matrix-green);
+    text-shadow: 0 0 20px var(--matrix-green);
+    position: relative;
+}
+
+.hero-content h1::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: var(--matrix-green);
+    z-index: -1;
+    filter: blur(10px);
+    opacity: 0.2;
+}
+
+.floating-robot {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+/* Feature Cards */
+#features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 5rem 5%;
+}
+
+.feature-card {
+    background: rgba(0, 20, 0, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 2rem;
+    border-radius: 15px;
+    border: 1px solid var(--matrix-green);
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(0, 255, 0, 0.2),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+.feature-card:hover::before {
+    left: 100%;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+}
+
+.hologram-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    position: relative;
+    color: var(--matrix-green);
+    text-shadow: 0 0 10px var(--matrix-green);
+}
+
+/* CTA Button */
+.cta-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: transparent;
+    color: var(--matrix-green);
+    text-decoration: none;
+    border-radius: 30px;
+    margin-top: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 2px solid var(--matrix-green);
+    text-shadow: 0 0 10px var(--matrix-green);
+}
+
+.cta-button:hover {
+    background: var(--matrix-green);
+    color: var(--dark-bg);
+    transform: scale(1.05);
+    box-shadow: 0 0 30px var(--matrix-green);
+}
+
+/* Experience Points */
+.experience-points {
+    background: rgba(0, 20, 0, 0.8);
+    border: 1px solid var(--matrix-green);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+}
+
+.xp-bar {
+    background: rgba(0, 255, 0, 0.1);
+    border: 1px solid var(--matrix-green);
+}
+
+.xp-progress {
+    background: var(--matrix-green);
+    box-shadow: 0 0 10px var(--matrix-green);
+}
+
+/* Achievement Popup */
+.achievement-popup {
+    background: rgba(0, 20, 0, 0.9);
+    border: 1px solid var(--matrix-green);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+}
+
+/* Portal Effect */
+.portal-effect {
+    background: radial-gradient(circle, var(--matrix-green) 0%, transparent 70%);
+    filter: blur(20px);
+}
+
+@keyframes portalPulse {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+    50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.2; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 2rem;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #hero {
+        flex-direction: column;
+        text-align: center;
+        padding-top: 2rem;
+    }
+
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .floating-robot {
+        width: 300px;
+        height: 300px;
+        margin-top: 2rem;
+    }
+} 

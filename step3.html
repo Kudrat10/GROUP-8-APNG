@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 3: Career Recommendations - AI Career Explorer</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .recommendations-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(0, 20, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid var(--matrix-green);
+        }
+
+        .career-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .career-card {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid var(--matrix-green);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .career-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+        }
+
+        .career-title {
+            font-size: 1.5rem;
+            color: var(--matrix-green);
+            margin-bottom: 1rem;
+        }
+
+        .career-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 0.5rem;
+            background: rgba(0, 255, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: rgba(0, 255, 0, 0.7);
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            color: var(--matrix-green);
+        }
+
+        .skill-match {
+            margin: 1rem 0;
+        }
+
+        .skill-bar {
+            width: 100%;
+            height: 5px;
+            background: rgba(0, 255, 0, 0.1);
+            border-radius: 5px;
+            margin: 0.5rem 0;
+        }
+
+        .skill-progress {
+            height: 100%;
+            background: var(--matrix-green);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        .comparison-chart {
+            margin: 2rem 0;
+            height: 400px;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid var(--matrix-green);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .recommendation-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .action-button {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid var(--matrix-green);
+            color: var(--matrix-green);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-button:hover {
+            background: var(--matrix-green);
+            color: var(--dark-bg);
+        }
+
+        .country-filter {
+            margin-bottom: 2rem;
+        }
+
+        .country-filter select {
+            padding: 0.5rem;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid var(--matrix-green);
+            color: var(--matrix-green);
+            border-radius: 5px;
+            margin-left: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    <canvas id="game-canvas"></canvas>
+
+    <div class="game-overlay">
+        <header>
+            <nav>
+                <div class="logo">AI Career Explorer</div>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="step2.html">Previous Step</a></li>
+                    <li><a href="results.html">View Results</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <section class="recommendations-container">
+                <h2>Career Recommendations</h2>
+
+                <div class="country-filter">
+                    <label>Filter by Country:</label>
+                    <select id="countryFilter" onchange="updateRecommendations()">
+                        <option value="">All Countries</option>
+                        <option value="US">United States</option>
+                        <option value="UK">United Kingdom</option>
+                        <option value="CA">Canada</option>
+                        <option value="AU">Australia</option>
+                        <option value="DE">Germany</option>
+                        <option value="FR">France</option>
+                        <option value="JP">Japan</option>
+                        <option value="SG">Singapore</option>
+                        <option value="IN">India</option>
+                        <option value="CN">China</option>
+                    </select>
+                </div>
+
+                <div class="career-grid" id="careerGrid">
+                    <!-- Career cards will be dynamically added here -->
+                </div>
+
+                <div class="comparison-chart">
+                    <canvas id="comparisonChart"></canvas>
+                </div>
+
+                <button class="cta-button" onclick="proceedToResults()">View Detailed Results</button>
+            </section>
+        </main>
+    </div>
+
+    <script src="scripts.js"></script>
+    <script>
+        let assessmentData = JSON.parse(localStorage.getItem('assessmentData'));
+        let analysisData = JSON.parse(localStorage.getItem('analysisData'));
+
+        // Sample career recommendations (replace with real data in production)
+        const careerRecommendations = [
+            {
+                title: 'AI Solutions Architect',
+                industry: 'Technology',
+                salary: '$120,000 - $180,000',
+                growth: 'High',
+                aiImpact: 90,
+                skillMatch: 85,
+                requiredSkills: ['AI/ML', 'Cloud Computing', 'System Design'],
+                country: 'US'
+            },
+            {
+                title: 'Data Science Manager',
+                industry: 'Technology',
+                salary: '$130,000 - $200,000',
+                growth: 'High',
+                aiImpact: 95,
+                skillMatch: 80,
+                requiredSkills: ['Data Science', 'Leadership', 'Project Management'],
+                country: 'US'
+            },
+            {
+                title: 'AI Ethics Consultant',
+                industry: 'Consulting',
+                salary: '$100,000 - $150,000',
+                growth: 'Medium',
+                aiImpact: 85,
+                skillMatch: 75,
+                requiredSkills: ['Ethics', 'AI/ML', 'Consulting'],
+                country: 'UK'
+            }
+        ];
+
+        // Initialize comparison chart
+        const comparisonCtx = document.getElementById('comparisonChart').getContext('2d');
+        const comparisonChart = new Chart(comparisonCtx, {
+            type: 'bar',
+            data: {
+                labels: ['AI Impact', 'Growth Potential', 'Skill Match', 'Salary Range'],
+                datasets: [{
+                    label: 'Career Match Score',
+                    data: [0, 0, 0, 0],
+                    backgroundColor: 'rgba(0, 255, 0, 0.5)',
+                    borderColor: '#00ff00',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: {
+                            color: 'rgba(0, 255, 0, 0.1)'
+                        },
+                        ticks: {
+                            color: '#00ff00'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(0, 255, 0, 0.1)'
+                        },
+                        ticks: {
+                            color: '#00ff00'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#00ff00'
+                        }
+                    }
+                }
+            }
+        });
+
+        function createCareerCard(career) {
+            return `
+                <div class="career-card">
+                    <h3 class="career-title">${career.title}</h3>
+                    <div class="career-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Industry</div>
+                            <div class="stat-value">${career.industry}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Salary Range</div>
+                            <div class="stat-value">${career.salary}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Growth</div>
+                            <div class="stat-value">${career.growth}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">AI Impact</div>
+                            <div class="stat-value">${career.aiImpact}%</div>
+                        </div>
+                    </div>
+                    <div class="skill-match">
+                        <div>Skill Match: ${career.skillMatch}%</div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: ${career.skillMatch}%"></div>
+                        </div>
+                    </div>
+                    <div class="required-skills">
+                        <h4>Required Skills:</h4>
+                        <div class="skill-tags">
+                            ${career.requiredSkills.map(skill => `
+                                <div class="skill-tag">${skill}</div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="recommendation-actions">
+                        <button class="action-button" onclick="viewDetails('${career.title}')">View Details</button>
+                        <button class="action-button" onclick="exploreJobs('${career.title}')">Explore Jobs</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateRecommendations() {
+            const country = document.getElementById('countryFilter').value;
+            const filteredCareers = country 
+                ? careerRecommendations.filter(career => career.country === country)
+                : careerRecommendations;
+
+            const careerGrid = document.getElementById('careerGrid');
+            careerGrid.innerHTML = filteredCareers.map(createCareerCard).join('');
+
+            // Update comparison chart
+            const averageScores = calculateAverageScores(filteredCareers);
+            comparisonChart.data.datasets[0].data = [
+                averageScores.aiImpact,
+                averageScores.growth,
+                averageScores.skillMatch,
+                averageScores.salary
+            ];
+            comparisonChart.update();
+        }
+
+        function calculateAverageScores(careers) {
+            return {
+                aiImpact: careers.reduce((sum, career) => sum + career.aiImpact, 0) / careers.length,
+                growth: careers.reduce((sum, career) => sum + (career.growth === 'High' ? 100 : 50), 0) / careers.length,
+                skillMatch: careers.reduce((sum, career) => sum + career.skillMatch, 0) / careers.length,
+                salary: careers.reduce((sum, career) => {
+                    const [min, max] = career.salary.replace(/[^0-9]/g, ' ').trim().split(' ').map(Number);
+                    return sum + ((min + max) / 2);
+                }, 0) / careers.length
+            };
+        }
+
+        function viewDetails(careerTitle) {
+            // Implement detailed view functionality
+            console.log(`Viewing details for ${careerTitle}`);
+        }
+
+        function exploreJobs(careerTitle) {
+            // Implement job exploration functionality
+            console.log(`Exploring jobs for ${careerTitle}`);
+        }
+
+        function proceedToResults() {
+            // Save final recommendations
+            const recommendationsData = {
+                careers: careerRecommendations,
+                comparison: calculateAverageScores(careerRecommendations)
+            };
+            localStorage.setItem('recommendationsData', JSON.stringify(recommendationsData));
+            window.location.href = 'results.html';
+        }
+
+        // Initialize recommendations
+        updateRecommendations();
+    </script>
+</body>
+</html> 
